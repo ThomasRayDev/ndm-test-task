@@ -2,7 +2,22 @@ import React from 'react';
 
 import './scss/main.scss';
 
-const ipList = [
+type OrderBy = 'address' | 'gateway' | 'interface';
+
+interface IpObject {
+  uuid: string;
+  address: string;
+  mask: string;
+  gateway: string;
+  interface: string;
+}
+
+interface SortProperty {
+  order: 'asc' | 'desc';
+  by: OrderBy;
+}
+
+const ipList: readonly IpObject[] = [
   {
     uuid: 'uuid-1',
     address: '0.0.0.0',
@@ -62,7 +77,7 @@ const ipList = [
 ];
 
 function App() {
-  const [sortProperty, setSortProperty] = React.useState({
+  const [sortProperty, setSortProperty] = React.useState<SortProperty>({
     order: 'asc',
     by: 'address',
   });
@@ -93,7 +108,7 @@ function App() {
     }
   });
 
-  const handleClick = (by) => {
+  const handleSortClick = (by: OrderBy) => {
     if (by !== sortProperty.by) {
       setSortProperty({
         order: 'asc',
@@ -107,7 +122,7 @@ function App() {
     }
   };
 
-  const ipElements = sortedList.map((obj) => (
+  const ipRows = sortedList.map((obj) => (
     <tr key={obj.uuid}>
       <td>{`${obj.address}/${obj.mask}`}</td>
       <td>{obj.gateway}</td>
@@ -122,21 +137,21 @@ function App() {
         <table>
           <thead>
             <tr>
-              <th onClick={() => handleClick('address')}>
+              <th onClick={() => handleSortClick('address')}>
                 <div className="header-cell">
                   Адрес назначения
                   {sortProperty.by === 'address' &&
                     (sortProperty.order === 'asc' ? <span>▲</span> : <span>▼</span>)}
                 </div>
               </th>
-              <th onClick={() => handleClick('gateway')}>
+              <th onClick={() => handleSortClick('gateway')}>
                 <div className="header-cell">
                   Шлюз
                   {sortProperty.by === 'gateway' &&
                     (sortProperty.order === 'asc' ? <span>▲</span> : <span>▼</span>)}
                 </div>
               </th>
-              <th onClick={() => handleClick('interface')}>
+              <th onClick={() => handleSortClick('interface')}>
                 <div className="header-cell">
                   Интерфейс
                   {sortProperty.by === 'interface' &&
@@ -145,7 +160,7 @@ function App() {
               </th>
             </tr>
           </thead>
-          <tbody>{ipElements}</tbody>
+          <tbody>{ipRows}</tbody>
         </table>
       </div>
     </div>
